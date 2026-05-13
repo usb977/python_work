@@ -2,9 +2,11 @@
 prompt = '\nTell me something, and I will repeat it back to you: '
 prompt += '\nEnter "quit" to end the program.'
 
-message = ""    #给个初始值，只要不是'quit'都能进入while循环
-while message != 'quit':
+active = True
+while active == True:
     message = input(prompt)
-
-    if message!='quit':   #避免打印quit
+    
+    if message != 'quit':   #避免打印quit
         print(message)
+    else:
+        active = False
