@@ -1,0 +1,20 @@
+class Dog:
+    """一次模拟小狗的简单尝试"""
+    def __init__(self,name,age):
+        """初始化属性 name 和 age """
+        self.name = name
+        self.age = age
+    
+    def sit(self):
+        """模拟小狗收到命令时坐下"""
+        print(f"{self.name} is now sitting.")
+    
+    def roll_over(self):
+        """模拟小狗收到命令时打滚"""
+        print(f"{self.name} rolled over!")
+
+my_dog = Dog('Willie',6)
+print(f"我家狗的名字是{my_dog.name}")
+print(f"我家狗有{my_dog.age}岁了")
+my_dog.sit()
+my_dog.roll_over()
