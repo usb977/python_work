@@ -10,8 +10,10 @@ class AlienInvasion:
         pygame.init()
         self.clock_ = pygame.time.Clock()                       #创建一个时钟对象
         self.settings_ = Settings()
-        self.screen_ = pygame.display.set_mode(
-            (self.settings_.screen_width_, self.settings_.screen_height_))      #实参是一个元组，返回一个surface对象：显示窗口
+        self.screen_ = pygame.display.set_mode((self.settings_.screen_width_, self.settings_.screen_height_)) 
+        # self.screen_ = pygame.display.set_mode((0,0),pygame.FULLSCREEN)      #实参是一个元组，返回一个surface对象：显示窗口
+        # self.settings_.screen_width_ = self.screen_.get_rect().width
+        # self.settings_.screen_height_ = self.screen_.get_rect().height      #先创建屏幕对象，然后再全屏显示
         pygame.display.set_caption("外星人入侵")                    #标题栏
         self.ship_ = Ship(self)
     
@@ -19,6 +21,7 @@ class AlienInvasion:
         """开始游戏的主循环"""
         while True:
             self._check_events()
+            self.ship_.update()
             self._update_screen()
             self.clock_.tick(60)       #游戏的帧率设为60
     
@@ -27,12 +30,32 @@ class AlienInvasion:
             for event in pygame.event.get():      #get()返回的是列表
                 if event.type == pygame.QUIT:
                     sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    self._check_keydown_events(event)
+                elif event.type == pygame.KEYUP:
+                    self._check_keyup_events(event)
+
+    def _check_keydown_events(self, event):
+        """响应按下事件"""
+        if event.key == pygame.K_RIGHT:
+            self.ship_.moving_right_ = True
+        elif event.key == pygame.K_LEFT:        #这里可以用elif，因为两个键同时按下是两个事件，可以分别处理
+            self.ship_.moving_left_ = True
+        elif event.key == pygame.K_q:
+            sys.exit()
+    
+    def _check_keyup_events(self, event):
+        """响应按键释放事件"""
+        if event.key == pygame.K_RIGHT:
+            self.ship_.moving_right_ = False
+        elif event.key == pygame.K_LEFT:
+            self.ship_.moving_left_ = False
 
     def _update_screen(self):
         """每次更新屏幕上的图像，并切换到新屏幕"""
         self.screen_.fill(self.settings_.bg_color_)
         self.ship_.blitme()
-        #每次while调用都更新一次屏幕
+        #将绘制好的后台画图内容“翻”到台前
         pygame.display.flip()   
 
 if __name__ == '__main__':
