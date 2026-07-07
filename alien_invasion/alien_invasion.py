@@ -17,7 +17,7 @@ class AlienInvasion:
         self.ship_ = Ship(self)
         self.bullets_ = pygame.sprite.Group()
         self.aliens_ = pygame.sprite.Group()
-        self._create_fleet()                    #初始化的时候就创建一个外星人
+        self._create_fleet()                      #初始化的时候就创建一个外星人
 
     def run_game(self):
         """开始游戏的主循环"""
@@ -86,6 +86,9 @@ class AlienInvasion:
         """检查是否有外星人位于屏幕边缘，并更新外星舰队中所有外星人的位置"""
         self._check_fleet_edges()
         self.aliens_.update()
+        #检测外星人和飞船之间的碰撞
+        if pygame.sprite.spritecollideany(self.ship_, self.aliens_):    #返回第一个与飞船碰撞的外星人
+            print('Ship hit!!!')
 
     def _check_fleet_edges(self):
         """在有外星人移动到屏幕边缘的时候采取相应的措施"""
@@ -114,8 +117,16 @@ class AlienInvasion:
         self.bullets_.update()
         #删除消失的子弹
         for bullet in self.bullets_.copy():
-                if bullet.rect_.bottom <= 0:
+                if bullet.rect.bottom <= 0:
                     self.bullets_.remove(bullet)
+        self._check_bullet_alien_collisions()
+        
+    def _check_bullet_alien_collisions(self):
+        #检测子弹与外星人是否有碰撞，有就分别删除
+        collisions = pygame.sprite.groupcollide(self.bullets_, self.aliens_, True, True)
+        if not self.aliens_:
+            self.bullets_.empty()
+            self._create_fleet()
 
 if __name__ == '__main__':
     ai = AlienInvasion()
