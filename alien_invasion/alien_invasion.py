@@ -1,6 +1,8 @@
 import sys       #退出游戏的时候需要用到
+from time import sleep    #导入sleep()函数方便暂停
 import pygame
 from settings import Settings
+from game_stats import GameStats
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
@@ -14,18 +16,21 @@ class AlienInvasion:
         self.settings_ = Settings()
         self.screen_ = pygame.display.set_mode((self.settings_.screen_width_, self.settings_.screen_height_)) 
         pygame.display.set_caption("外星人入侵")                   #标题栏
+        self.stats = GameStats(self)
         self.ship_ = Ship(self)
         self.bullets_ = pygame.sprite.Group()
         self.aliens_ = pygame.sprite.Group()
         self._create_fleet()                      #初始化的时候就创建一个外星人
+        self.game_active = True
 
     def run_game(self):
         """开始游戏的主循环"""
         while True:
             self._check_events()
-            self.ship_.update()
-            self._update_bullets()     #更新编组中所有子弹的位置
-            self._update_aliens()     #先更新子弹，再更新外星人位置，看是否有击中
+            if self.game_active:
+                self.ship_.update()
+                self._update_bullets()     #更新编组中所有子弹的位置
+                self._update_aliens()     #先更新子弹，再更新外星人位置，看是否有击中
             self._update_screen()
             self.clock_.tick(60)       #游戏的帧率设为60
     
@@ -88,13 +93,34 @@ class AlienInvasion:
         self.aliens_.update()
         #检测外星人和飞船之间的碰撞
         if pygame.sprite.spritecollideany(self.ship_, self.aliens_):    #返回第一个与飞船碰撞的外星人
-            print('Ship hit!!!')
+            self._ship_hit()
+        self._check_aliens_bottom()
+
+    def _ship_hit(self):
+        """外星人撞到玩家飞船的处理方法"""
+        if self.stats.ships_left > 0:
+            self.stats.ships_left -= 1
+            self.bullets_.empty()
+            self.aliens_.empty()
+
+            self._create_fleet()
+            self.ship_.center_ship()
+            sleep(0.5)
+        else:
+            self.game_active = False
 
     def _check_fleet_edges(self):
-        """在有外星人移动到屏幕边缘的时候采取相应的措施"""
+        """在有外星人左右移动到屏幕边缘的时候采取相应的措施"""
         for alien in self.aliens_.sprites():
             if alien.check_edges():
                 self._change_fleet_direction()
+                break
+    
+    def _check_aliens_bottom(self):
+        """检查是否有外星人到达屏幕的下边缘"""
+        for alien in self.aliens_.sprites():
+            if alien.rect.bottom >= self.settings_.screen_height_:
+                self._ship_hit()
                 break
 
     def _change_fleet_direction(self):
