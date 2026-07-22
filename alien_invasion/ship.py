@@ -1,9 +1,11 @@
 import pygame
+from pygame.sprite import Sprite
 
-class Ship:
+class Ship(Sprite):
     """管理飞船的类"""
     def __init__(self, ai_game):
         """初始化飞船并设置其初始位置"""
+        super().__init__()
         self.screen_ = ai_game.screen_  #屏幕
         self.screen_rect_ = ai_game.screen_.get_rect()    #为了将飞船放到屏幕的合适位置，首先要获取屏幕的位置属性
         self.settings_ = ai_game.settings_

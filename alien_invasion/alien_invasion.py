@@ -8,6 +8,7 @@ from bullet import Bullet
 from alien import Alien
 from button import Button
 from scoreboard import ScoreBoard
+from pathlib import Path
 
 class AlienInvasion:
     """管理游戏资源和行为的类"""
@@ -18,6 +19,7 @@ class AlienInvasion:
         self.settings_ = Settings()
         self.screen_ = pygame.display.set_mode((self.settings_.screen_width_, self.settings_.screen_height_)) 
         pygame.display.set_caption("外星人入侵")                   #标题栏
+        self.path = Path('history_high_score.txt')
         self.stats = GameStats(self)
         self.sb = ScoreBoard(self)
         self.ship_ = Ship(self)
@@ -42,6 +44,7 @@ class AlienInvasion:
         #监听键盘和鼠标事件,for循环处理
             for event in pygame.event.get():      #get()返回的是列表
                 if event.type == pygame.QUIT:
+                    self.record_history_high_score()
                     sys.exit()
                 elif event.type == pygame.KEYDOWN:
                     self._check_keydown_events(event)
@@ -58,6 +61,7 @@ class AlienInvasion:
         elif event.key == pygame.K_LEFT:        #这里可以用elif，因为两个键同时按下是两个事件，可以分别处理
             self.ship_.moving_left_ = True
         elif event.key == pygame.K_q:
+            self.record_history_high_score()
             sys.exit()
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
@@ -76,6 +80,8 @@ class AlienInvasion:
             self.settings_.initialize_dynamic_settings()
             self.stats.reset_stats()
             self.sb.prep_score()
+            self.sb.prep_level()
+            self.sb.prep_ships()
             self.bullets_.empty()
             self.aliens_.empty()
             self._create_fleet()
@@ -122,6 +128,7 @@ class AlienInvasion:
         """外星人撞到玩家飞船的处理方法"""
         if self.stats.ships_left > 0:
             self.stats.ships_left -= 1
+            self.sb.prep_ships()
             self.bullets_.empty()
             self.aliens_.empty()
 
@@ -182,10 +189,17 @@ class AlienInvasion:
             for aliens in collisions.values():
                 self.stats.score += self.settings_.alien_points * len(aliens)  #alines是一个列表
             self.sb.prep_score()
+            self.sb.check_high_score()
         if not self.aliens_:    #如果外星人都被击中了就清空屏幕并重新创建舰队
             self.bullets_.empty()
             self._create_fleet()
             self.settings_.increase_speed()
+
+            self.stats.level += 1
+            self.sb.prep_level()
+
+    def record_history_high_score(self):
+        self.path.write_text(str(self.stats.high_score))
 
 if __name__ == '__main__':
     ai = AlienInvasion()
