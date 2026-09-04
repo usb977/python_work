@@ -1,3 +1,14 @@
+"""
+@File       : sitka_highs_lows.py
+@Desc       : 从csv文件提取sitka地区一年内的高低温数据，并用matplotlib绘制折线图，填充两折线之间的区域
+@Author     : Dylan
+@LastUpdate : 2026/08/26
+@Version    : 1.0
+
+Usage example:
+    无示例
+"""
+
 from pathlib import Path
 import csv
 import matplotlib.pyplot as plt
