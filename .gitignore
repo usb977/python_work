@@ -1,0 +1,47 @@
+# ===== Python 字节码 / 缓存 =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ===== 虚拟环境 =====
+venv/
+.venv/
+env/
+ENV/
+
+# ===== Django =====
+# 本地数据库（sqlite3 不应纳入版本控制）
+db.sqlite3
+*.sqlite3
+# 本地覆盖配置
+local_settings.py
+# 静态文件收集目录（生产环境部署时生成）
+staticfiles/
+
+# ===== Pygame / alien_invasion 运行时生成的数据 =====
+history_high_score.txt
+high_score.txt
+
+# ===== 打包 / 分发 =====
+build/
+dist/
+*.egg-info/
+*.egg
+
+# ===== 测试 / 覆盖率 =====
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+
+# ===== IDE / 编辑器 =====
+.vscode/
+.idea/
+*.swp
+
+# ===== 操作系统 =====
+.DS_Store
+Thumbs.db
+desktop.ini
