@@ -11,4 +11,5 @@ urlpatterns = [
     path('topics/<int:topic_id>/', views.topic, name='topic'), #某个特定主题的视图
     path('new_topic/', views.new_topic, name='new_topic'), #用户新建主题的跳转
     path('new_entry/<int:topic_id>/', views.new_entry, name='new_entry'), #用户新建条目的跳转
+    path('edit_entry/<int:entry_id>/', views.edit_entry, name='edit_entry'), #用户修改条目的url
 ]

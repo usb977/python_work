@@ -1,7 +1,7 @@
 {% extends 'learning_logs/base.html' %}
 
 {% block content %}
-    <p>Topics</p>
+    <p>主题目录</p>
 
     <ul>   <!-- 无序列表的显示方式 -->
         {% for topic in topics %}
@@ -14,7 +14,7 @@
     </ul>
 
     <a href="{% url 'learning_logs:new_topic' %}">
-        Add a new topic
+        新增一个主题
     </a>
 
 {% endblock content %}

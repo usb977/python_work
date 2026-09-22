@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 
-from .models import Topic
+from .models import Topic, Entry
 from .forms import TopicForm, EntryForm
 
 # Create your views here.
@@ -53,3 +53,21 @@ def new_entry(request, topic_id):
     #如果输入为空或者数据无效
     context = {'topic':topic, 'form':form}
     return render(request, 'learning_logs/new_entry.html', context)
+
+def edit_entry(request, entry_id):
+    """用户修改具体的条目"""
+    entry = Entry.objects.get(id=entry_id)
+    topic = entry.topic
+
+    if request.method != 'POST':
+        #初次GET请求：将当前的条目内容填充到表单中
+        form = EntryForm(instance=entry)
+    else:
+        #已填充好，发送POST
+        form = EntryForm(instance=entry, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('learning_logs:topic',topic_id=topic.id)  #只定义了变量topic，所以是topic.id
+    #如果数据无效或者首次请求，返回当前页面
+    context = {'entry':entry, 'topic':topic, 'form':form}
+    return render(request, 'learning_logs/edit_entry.html', context)
