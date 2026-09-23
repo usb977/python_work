@@ -1,6 +1,20 @@
 <p>
     <a href="{% url 'learning_logs:index' %}">主页</a> -    <!-- 创建一个到主页的链接 -->
-    <a href="{% url 'learning_logs:topics' %}">主题页</a>         <!-- 创建跳转到话题集合的链接 -->
+    <a href="{% url 'learning_logs:topics' %}">主题页</a> -     <!-- 创建跳转到话题集合的链接 -->
+    {% if user.is_authenticated %}
+        您好，{{ user.username }}!
+    {% else %}
+        <a href="{% url 'accounts:register' %}">注册</a> - 
+        <a href="{% url 'accounts:login' %}">登录</a>
+    {% endif %}
 </p>
 
 {% block content %}{% endblock content %}
+
+{% if user.is_authenticated %}
+    <hr />                                                            <!-- 加个水平线 -->
+    <form action="{% url 'accounts:logout' %}" method='post'>    <!-- 点击按钮的动作会发送一个post给accounts:logout这个URL -->
+        {% csrf_token %}
+        <button name="submit">注销</button>
+    </form>
+{% endif %}

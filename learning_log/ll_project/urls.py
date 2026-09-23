@@ -20,5 +20,6 @@ from django.urls import path, include
 #project总路由文件
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('accounts.urls')),  #将用户账户外包给app文件夹下的urls.py文件来处理
     path('', include('learning_logs.urls')),  #将项目的主页url外包给app文件夹下的urls.py文件来处理
 ]
