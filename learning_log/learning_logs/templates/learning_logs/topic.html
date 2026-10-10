@@ -1,25 +1,35 @@
 {% extends 'learning_logs/base.html' %}
 
+
+{% block page_header %}
+    <h1>{{ topic.text }}</h1>
+{% endblock page_header %}
+
 {% block content %}
-
-    <p>当前主题：{{ topic.text }}</p>
-
-    <p>笔记列表：</p>
     <p>
-        <a href="{% url 'learning_logs:new_entry' topic.id %}">点击新增笔记</a>
+        <a href="{% url 'learning_logs:new_entry' topic.id %}">
+            添加新笔记
+        </a>
     </p>
-    <ul>   <!-- 无序列表的显示方式 -->
-        {% for entry in entries %}
-            <li>
-                <p>{{ entry.date_added|date:'M d, Y H:i' }}</p>
-                <p>{{ entry.text|linebreaks }}</p>
-                <p>
-                    <a href="{% url 'learning_logs:edit_entry' entry.id %}">修改内容</a>
-                </p>
-            </li>
-        {% empty %}
-            <li>！！！该主题下目前还没有笔记！！！</li>
-        {% endfor %}
-    </ul>
+
+    {% for entry in entries %}
+        <div class="card mb-3">
+            <h4 class="card-header">
+                {{ entry.date_added|date:'Y M d, H:i' }}
+                <small>
+                    <a href="{% url 'learning_logs:edit_entry' entry.id %}">
+                        修改内容
+                    </a>
+                </small>
+            </h4>
+            <div class="card-body">
+                {{ entry.text|linebreaks }}
+            </div>
+        </div>
+    {% empty %}
+        <p>
+            该主题目前还没有添加任何内容！
+        </p>
+    {% endfor %}
 
 {% endblock content %}
